@@ -3,6 +3,8 @@ package org.mealforge.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.flow.distinctUntilChanged
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,10 +37,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MealForgeApp() {
     var tab by remember { mutableStateOf(0) }
-    val groceries = remember { mutableStateListOf("Rice", "Chicken", "Tomatoes", "Eggs") }
+    val store = remember(LocalContext.current) { MealStore(LocalContext.current) }
+    val groceries = remember { mutableStateListOf<String>().apply { addAll(store.loadList("groceries", listOf("Rice", "Chicken", "Tomatoes", "Eggs"))) } }
     var newItem by remember { mutableStateOf("") }
-    val mealPlan = remember { mutableStateListOf("Garlic chicken & rice", "Veggie pasta", "Bean chili", "Baked salmon", "Breakfast burrito", "Veggie pasta", "Bean chili") }
-    var servings by remember { mutableIntStateOf(2) }
+    val mealPlan = remember { mutableStateListOf<String>().apply { addAll(store.loadList("meal_plan", listOf("Garlic chicken & rice", "Veggie pasta", "Bean chili", "Baked salmon", "Breakfast burrito", "Veggie pasta", "Bean chili"))) } }
+    var servings by remember { mutableIntStateOf(store.loadServings()) }
+    LaunchedEffect(store) {
+        snapshotFlow { groceries.toList() }.distinctUntilChanged().collect { store.saveList("groceries", it) }
+    }
+    LaunchedEffect(store) {
+        snapshotFlow { mealPlan.toList() }.distinctUntilChanged().collect { store.saveList("meal_plan", it) }
+    }
+    LaunchedEffect(store) {
+        snapshotFlow { servings }.distinctUntilChanged().collect { store.saveServings(it) }
+    }
     MaterialTheme(colorScheme = darkColorScheme(primary = Gold, secondary = Pink, tertiary = Purple, background = Dark, surface = Color(0xFF21101C), onBackground = Color.White, onSurface = Color.White)) {
         Scaffold(
             containerColor = Dark,
@@ -115,7 +127,7 @@ private fun MealForgeApp() {
                         }
                         Spacer(Modifier.height(20.dp))
                         FeatureCard("Free forever", "No ads, subscriptions, or paywalls.", Maroon)
-                        Text("MealForge 0.1.0 • Early preview", modifier = Modifier.padding(top = 16.dp), color = Pink)
+                        Text("MealForge 0.2.0 • Offline save enabled", modifier = Modifier.padding(top = 16.dp), color = Pink)
                     }
                 }
             }
