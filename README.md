@@ -30,3 +30,11 @@ GitHub Actions runs tests and lint and uploads a debug APK on every pull request
 The Room schema is exported to `app/schemas/`. Any schema change must bump the database version and ship a `Migration`; destructive migration is never used.
 
 See [PRIVACY.md](PRIVACY.md).
+
+## License
+
+Copyright © 2026 BaconDisk22 and MealForge contributors.
+
+MealForge is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See [LICENSE](LICENSE) for details.
+
+SPDX-License-Identifier: GPL-3.0-or-later

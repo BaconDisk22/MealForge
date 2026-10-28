@@ -63,6 +63,7 @@ fun SettingsScreen(vm: AppViewModel, nav: NavHostController) {
             InfoCard {
                 Text("MealForge ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.titleMedium)
                 Text("Free and open source. No ads, accounts, subscriptions or tracking.")
+                Text("Licensed under the GNU GPL v3 or later. Comes with absolutely no warranty.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 SpacerH(6)
                 Text("Privacy: MealForge has no internet permission. Your data never leaves this phone unless you share or back it up yourself.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 SpacerH(6)
