@@ -93,7 +93,7 @@ fun RecipeEditScreen(vm: AppViewModel, nav: NavHostController, id: Long) {
     LaunchedEffect(id) {
         if (id != 0L) {
             val r = vm.repo.recipe(id).first() ?: return@LaunchedEffect
-            original = r.recipe
+            d.original = r.recipe
             if (!d.loaded) {
                 d.name = r.recipe.name; d.description = r.recipe.description; d.category = r.recipe.category
                 d.tags = r.recipe.tags.joinToString(", "); d.servings = r.recipe.servings.toString()
@@ -117,7 +117,7 @@ fun RecipeEditScreen(vm: AppViewModel, nav: NavHostController, id: Long) {
     val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
             runCatching { context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) }
-            photoUri = uri.toString()
+            d.photoUri = uri.toString()
         }
     }
     val photo = rememberUriImage(d.photoUri)

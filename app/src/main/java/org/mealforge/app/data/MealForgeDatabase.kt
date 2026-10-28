@@ -238,11 +238,6 @@ interface MaintenanceDao {
     @Query("DELETE FROM spend_entries") suspend fun clearSpending()
     @Query("DELETE FROM household_members") suspend fun clearMembers()
     @Query("DELETE FROM settings") suspend fun clearSettings()
-
-    /** Child rows (ingredients, planned meals, list items, template meals) go via ON DELETE CASCADE. */
-    suspend fun clearAll() {
-        clearGroceryLists(); clearRecipes(); clearTemplates(); clearPantry(); clearSpending(); clearMembers(); clearSettings()
-    }
 }
 
 @Database(

@@ -265,7 +265,10 @@ class Repository(private val db: MealForgeDatabase, private val clock: () -> Lon
 
     /** Replaces all data with [backup] in one transaction; nothing changes if any insert fails. */
     suspend fun restore(backup: BackupFile) = db.withTransaction {
-        db.maintenance().clearAll()
+        // Child rows (ingredients, planned meals, list items, template meals) go via ON DELETE CASCADE.
+        db.maintenance().run {
+            clearGroceryLists(); clearRecipes(); clearTemplates(); clearPantry(); clearSpending(); clearMembers(); clearSettings()
+        }
         backup.recipes.forEach { recipes.insert(it) }
         recipes.insertIngredients(backup.ingredients)
         plan.insertAll(backup.plannedMeals)

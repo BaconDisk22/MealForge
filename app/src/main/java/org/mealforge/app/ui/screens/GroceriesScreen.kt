@@ -142,7 +142,7 @@ fun GroceriesScreen(vm: AppViewModel) {
                 }) { Text("Build from meal plan") }
             }
         }
-        val grouped = items.filter { !it.checked }.groupBy { it.department }.toSortedMap(compareBy { Departments.all.indexOf(it).let { i -> if (i < 0) 99 else i } })
+        val grouped = items.filter { !it.checked }.groupBy { it.department }.toSortedMap(compareBy<String>({ Departments.all.indexOf(it).let { i -> if (i < 0) 99 else i } }, { it }))
         val done = items.filter { it.checked }
         LazyColumn(Modifier.weight(1f).screenPadding) {
             grouped.forEach { (dept, rows) ->
