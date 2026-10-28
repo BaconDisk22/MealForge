@@ -40,7 +40,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -188,11 +188,11 @@ fun NumberField(label: String, value: String, onChange: (String) -> Unit, modifi
 @Composable
 fun rememberUriImage(uri: String?, maxSize: Int = 1080): ImageBitmap? {
     val context = LocalContext.current
-    val state = produceState<ImageBitmap?>(initialValue = null, uri) {
-        val loaded = if (uri == null) null else withContext(Dispatchers.IO) { decodeSampled(context, Uri.parse(uri), maxSize) }
-        value = loaded
+    val image = remember(uri) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(uri) {
+        image.value = if (uri == null) null else withContext(Dispatchers.IO) { decodeSampled(context, Uri.parse(uri), maxSize) }
     }
-    return state.value
+    return image.value
 }
 
 private fun decodeSampled(context: android.content.Context, uri: Uri, maxSize: Int): ImageBitmap? = runCatching {
