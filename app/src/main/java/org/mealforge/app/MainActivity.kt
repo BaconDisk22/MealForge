@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MealForgeApp() {
     var tab by remember { mutableStateOf(0) }
-    val store = remember(LocalContext.current) { MealStore(LocalContext.current) }
+    val context = LocalContext.current
+    val store = remember(context) { MealStore(context) }
     val groceries = remember { mutableStateListOf<String>().apply { addAll(store.loadList("groceries", listOf("Rice", "Chicken", "Tomatoes", "Eggs"))) } }
     var newItem by remember { mutableStateOf("") }
     val mealPlan = remember { mutableStateListOf<String>().apply { addAll(store.loadList("meal_plan", listOf("Garlic chicken & rice", "Veggie pasta", "Bean chili", "Baked salmon", "Breakfast burrito", "Veggie pasta", "Bean chili"))) } }
