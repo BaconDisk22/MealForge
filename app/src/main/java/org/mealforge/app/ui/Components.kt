@@ -189,20 +189,20 @@ fun NumberField(label: String, value: String, onChange: (String) -> Unit, modifi
 fun rememberUriImage(uri: String?, maxSize: Int = 1080): ImageBitmap? {
     val context = LocalContext.current
     val state = produceState<ImageBitmap?>(initialValue = null, uri) {
-        value = if (uri == null) null else withContext(Dispatchers.IO) {
-            runCatching {
-                val parsed = Uri.parse(uri)
-                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                context.contentResolver.openInputStream(parsed)?.use { BitmapFactory.decodeStream(it, null, bounds) }
-                var sample = 1
-                while (bounds.outWidth / (sample * 2) >= maxSize && bounds.outHeight / (sample * 2) >= maxSize) sample *= 2
-                val opts = BitmapFactory.Options().apply { inSampleSize = sample; inPreferredConfig = Bitmap.Config.ARGB_8888 }
-                context.contentResolver.openInputStream(parsed)?.use { BitmapFactory.decodeStream(it, null, opts) }?.asImageBitmap()
-            }.getOrNull()
-        }
+        val loaded = if (uri == null) null else withContext(Dispatchers.IO) { decodeSampled(context, Uri.parse(uri), maxSize) }
+        value = loaded
     }
     return state.value
 }
+
+private fun decodeSampled(context: android.content.Context, uri: Uri, maxSize: Int): ImageBitmap? = runCatching {
+    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+    var sample = 1
+    while (bounds.outWidth / (sample * 2) >= maxSize && bounds.outHeight / (sample * 2) >= maxSize) sample *= 2
+    val opts = BitmapFactory.Options().apply { inSampleSize = sample; inPreferredConfig = Bitmap.Config.ARGB_8888 }
+    context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, opts) }?.asImageBitmap()
+}.getOrNull()
 
 @Composable
 fun Pill(text: String, color: Color = MaterialTheme.colorScheme.secondaryContainer, textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer) {
