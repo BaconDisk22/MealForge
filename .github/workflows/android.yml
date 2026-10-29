@@ -26,6 +26,8 @@ jobs:
         run: ./gradlew :app:lintDebug
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug --stacktrace
+      - name: Build release (unsigned, checks R8 shrinking)
+        run: ./gradlew :app:assembleRelease --stacktrace
       - uses: actions/upload-artifact@v4
         if: always()
         with:
