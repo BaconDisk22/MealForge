@@ -17,6 +17,14 @@ Built with Kotlin, Jetpack Compose and Room. Original design in black, gold, pur
 
 Data from MealForge 0.2 (grocery list, weekly plan, servings) is imported automatically on first launch.
 
+## Install
+
+Download the latest `MealForge-x.y.z.apk` from [Releases](https://github.com/BaconDisk22/MealForge/releases) on an Android 10+ phone and open it. Later releases install over it and keep your data.
+
+**Coming from a CI test build (0.2 or the pre-release 0.5 test APK)?** Those were signed with a temporary key, so Android can't update them in place. In the old app go to More → Settings & backup → **Back up**, uninstall it, install the release, then **Restore**. (0.2 had no backup option; its grocery list, week plan and servings will need re-entering.)
+
+Test builds from CI now install separately as "MealForge Debug".
+
 ## Building
 
 ```
@@ -29,7 +37,7 @@ GitHub Actions runs tests and lint and uploads a debug APK on every pull request
 
 The Room schema is exported to `app/schemas/`. Any schema change must bump the database version and ship a `Migration`; destructive migration is never used.
 
-See [PRIVACY.md](PRIVACY.md).
+See [PRIVACY.md](PRIVACY.md). Release process: [RELEASING.md](RELEASING.md). Changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

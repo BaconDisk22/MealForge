@@ -16,8 +16,26 @@ android {
         versionCode = 5
         versionName = "0.5.0"
     }
+    // Release signing comes only from environment variables set by CI secrets; the keystore is never committed.
+    val keystorePath = System.getenv("MEALFORGE_KEYSTORE_PATH")
+    signingConfigs {
+        if (keystorePath != null) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("MEALFORGE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("MEALFORGE_KEY_ALIAS")
+                keyPassword = System.getenv("MEALFORGE_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
+        debug {
+            // Lets test builds sit beside the signed release on one phone.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
         release {
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
